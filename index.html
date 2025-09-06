@@ -1,324 +1,218 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FameList</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      color: white;
-      text-align: center;
-      overflow-x: hidden;
-      background: linear-gradient(135deg, #1c1c1c, #2a2a72);
-    }
-    header {
-      padding: 15px 20px;
-      background: rgba(0, 0, 0, 0.6);
-      position: sticky;
-      top: 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      z-index: 10;
-    }
-    header h1 {
-      margin: 0 auto;
-      font-size: 1.5em;
-    }
-    .search-container {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      margin: 10px 0;
-    }
-    #search {
-      padding: 8px;
-      border-radius: 5px;
-      border: none;
-      width: 250px;
-      transition: all 0.3s ease;
-    }
-    #search:focus {
-      outline: 2px solid #ff4081;
-      width: 300px;
-    }
-    .telegram-link {
-      margin-left: 20px;
-      font-size: 0.95em;
-    }
-    .telegram-link a {
-      color: #ffcc00;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .telegram-link a:hover {
-      text-decoration: underline;
-    }
-    .buttons {
-      margin-top: 20px;
-    }
-    .buttons button {
-      margin: 0 10px;
-      padding: 10px 20px;
-      font-size: 1em;
-      border: none;
-      border-radius: 10px;
-      background: #444;
-      color: white;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .buttons button:hover {
-      background: #ff4081;
-    }
-    .people-container {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-      padding: 20px;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    .card {
-      background: #333;
-      border-radius: 10px;
-      padding: 15px;
-      text-align: center;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-    .card:hover {
-      transform: scale(1.05);
-    }
-    .rank {
-      font-size: 0.9em;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    .avatar {
-      width: 140px;
-      height: 140px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid #ff4081;
-      margin-bottom: 10px;
-    }
-    .nickname {
-      font-size: 1em;
-      font-weight: bold;
-      margin-top: 5px;
-    }
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      visibility: hidden;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-    }
-    .modal.active {
-      visibility: visible;
-      opacity: 1;
-    }
-    .modal-content {
-      width: 600px;
-      max-width: 90%;
-      height: 500px;
-      background: #222;
-      border-radius: 15px;
-      padding: 20px;
-      position: relative;
-      text-align: left;
-      opacity: 0;
-      transform: scale(0.9);
-      animation: fadeIn 2.5s forwards;
-      overflow-y: auto;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-    }
-    .modal-content::-webkit-scrollbar {
-      display: none;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    .modal img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid #ff4081;
-      float: left;
-      margin-right: 15px;
-    }
-    .modal .nickname {
-      font-size: 1.2em;
-      margin: 0;
-    }
-    .modal .rank {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      font-size: 1em;
-    }
-    .modal .desc {
-      clear: both;
-      margin-top: 15px;
-      font-size: 0.95em;
-      color: #ccc;
-      white-space: pre-line;
-    }
-    .close {
-      position: absolute;
-      top: -10px;
-      right: -10px;
-      background: red;
-      color: white;
-      border-radius: 50%;
-      width: 25px;
-      height: 25px;
-      text-align: center;
-      line-height: 25px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .rank.red { color: red; }
-    .rank.green { color: lightgreen; }
-    .rank.blue { color: #4da6ff; }
-    .rank.brown { color: #cd853f; }
-    .rank.rainbow {
-      background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-size: 400% 400%;
-      animation: rainbow 5s ease infinite;
-    }
-    @keyframes rainbow {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    .rank.vip {
-      color: gold;
-      text-shadow: 0 0 5px white, 0 0 10px gold;
-      animation: vipShine 3s infinite;
-    }
-    @keyframes vipShine {
-      0%,100% { text-shadow: 0 0 5px white, 0 0 10px gold; }
-      50% { text-shadow: 0 0 15px white, 0 0 25px gold; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FameList</title>
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: white;
+  text-align: center;
+  overflow-x: hidden;
+  background: linear-gradient(135deg, #1c1c1c, #2a2a72);
+}
+header {
+  padding: 15px 20px;
+  background: rgba(0,0,0,0.6);
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  z-index: 10;
+}
+header h1 { margin: 0 auto; font-size: 1.5em; }
+.search-container { flex: 1; display: flex; justify-content: center; margin: 10px 0; }
+#search { padding: 8px; border-radius: 5px; border: none; width: 250px; transition: all 0.3s ease; }
+#search:focus { outline: 2px solid #ff4081; width: 300px; }
+.telegram-link { margin-left: 20px; font-size: 0.95em; }
+.telegram-link a { color: #ffcc00; text-decoration: none; font-weight: bold; }
+.telegram-link a:hover { text-decoration: underline; }
+.buttons { margin-top: 20px; }
+.buttons button {
+  margin: 0 10px;
+  padding: 10px 20px;
+  font-size: 1em;
+  border: none;
+  border-radius: 10px;
+  background: #444;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.buttons button:hover { background: #ff4081; }
+.people-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.card {
+  background: #333;
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.card:hover { transform: scale(1.05); }
+.rank { font-size: 0.9em; margin-bottom: 5px; font-weight: bold; }
+.avatar { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 3px solid #ff4081; margin-bottom: 10px; }
+.nickname { font-size: 1em; font-weight: bold; margin-top: 5px; }
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.modal.active { visibility: visible; opacity: 1; }
+.modal-content {
+  width: 600px; height: 500px;
+  background: #222;
+  border-radius: 15px;
+  padding: 20px;
+  position: relative;
+  text-align: left;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.modal-content::-webkit-scrollbar { display: none; }
+.modal-content img {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ff4081;
+  float: left;
+  margin-right: 15px;
+}
+.modal-content .nickname { font-size: 1.2em; margin: 0; }
+.modal-content .rank { position: absolute; top: 20px; right: 20px; font-size: 1em; }
+.modal-content .desc { clear: both; margin-top: 15px; font-size: 0.95em; color: #ccc; white-space: pre-line; }
+.close {
+  position: absolute; top: -40px; right: -40px;
+  background: red; color: white;
+  border-radius: 50%; width: 30px; height: 30px;
+  text-align: center; line-height: 30px;
+  cursor: pointer; font-weight: bold; font-size: 18px;
+  box-shadow: 0 0 10px black;
+}
+.rank.red { color: red; }
+.rank.green { color: lightgreen; }
+.rank.blue { color: #4da6ff; }
+.rank.brown { color: #cd853f; }
+.rank.rainbow {
+  background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-size: 400% 400%; animation: rainbow 5s ease infinite;
+}
+@keyframes rainbow { 0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%} }
+.rank.vip { color: gold; text-shadow: 0 0 5px white,0 0 10px gold; animation: vipShine 3s infinite; }
+@keyframes vipShine {0%,100%{text-shadow:0 0 5px white,0 0 10px gold}50%{text-shadow:0 0 15px white,0 0 25px gold}}
+</style>
 </head>
 <body>
-  <header>
-    <h1>FameList</h1>
-    <div class="search-container">
-      <input type="text" id="search" placeholder="Поиск...">
-    </div>
-    <div class="telegram-link">
-      <a href="https://t.me/nqaef" target="_blank">наш телеграм канал</a>
-    </div>
-  </header>
-  <div class="buttons">
-    <button onclick="openInfo('list')">Попасть в лист</button>
-    <button onclick="openInfo('info')">Информация</button>
-  </div>
-  <main>
-    <div class="people-container" id="people"></div>
-  </main>
-  <div class="modal" id="modal">
-    <div class="modal-content" id="modal-content">
-      <span class="close" onclick="closeModal()">×</span>
-    </div>
-  </div>
-  <script>
-    const people = [
-      { name: "Гришаня Доксеров", rank: "Создатель", color:"rainbow", img: "https://i.postimg.cc/RhT6mzKV/8b4a84335ec143aed6a829c6bc9fe0cd.jpg", desc: "Медийка. Пришел в км в 2021 году. Стал популярным благодаря бесплатному деффингу и тик ток видео." },
-      { name: "Куте", rank: "Админ", color:"vip", img: "https://i.postimg.cc/QtfZZ4VZ/photo-2025-09-06-16-10-13.jpg", desc: "Куте, добрый и феймовый человек. В км с 2022 года. Имеет свой тик ток аккаунт и телеграм каналы." },
-      { name: "Sofia Dox", rank: "Медийка", color:"red", img: "https://i.postimg.cc/CKH9gPdL/photo-2025-09-06-16-50-03.jpg", desc: `приобрёл популярность за счёт высокой аудитории, конфликты с медийками и феймами по касте - осинтер сватер провокатор соц инженерия
-знаком с личностями: лордик, тедди, мирик, лезвие, блек принц имел тгк: 1.1к, 1.2к, 3к, 2к сейчас на данный момент почти 3.1к` },
-      { name: "лето шаблонiр", rank: "Начинающий Фейм", color:"brown", img: "https://i.postimg.cc/zGLKjg0W/leto-shablonir.jpg", desc: "Перешел в  комьюните ЭДИТОРСТВА в 2025 году, начал поднимать по не многу фейм, но потом потерял и за случий сноса, так же был канал на 300 сабов, но произошел снос, и щас создал новый тгк, и новую лику (старая лика •вензи• )\nсоцсети : \nтг: @letzex \nтгк: в профиле" },
-      { name: "Новиков", rank: "Начинающий Фейм", color:"brown", img: "https://i.postimg.cc/764KBxSb/novikov.jpg", desc: "пришел в км в 25 году примерно 3 месяца назад, имеет хороший опыт, есть хороший тгк" },
-      { name: "Lewha", rank: "Средний Фейм", color:"green", img: "https://i.postimg.cc/8cWcHfTY/lewha.jpg", desc: "Пришел в км в 2023 году имеет средний фейм (так как потерял много аккаунтов), новый тгк-https://t.me/+8pXoDWzojBYxOWE9, Тг @Mqtvw" },
-      { name: "Кайсен", rank: "Начинающий Фейм", color:"brown", img: "https://i.postimg.cc/ZYPzd6Gx/kaysen.jpg", desc: "Имеет Начинающий фейм, Пришёл в Комьюнити 2025 году, Каста Осинт-Сват-Снос, Знаком с такими личностями как: Громко,Апатия,Сквизи,Мирик,Факоф,имеет канал с 120 Подписчиками" },
-      { name: "every", rank: "Высокий Фейм", color:"blue", img: "https://i.postimg.cc/k5Z29cnb/every.jpg", desc: "Пришел в км в 2024 году в декабре, начал активно развиваться после того как ливнул друг, на данный момент афк. Имеет два канала один общий с другом на 200 сабов второй на 1.1 к сабов его\nего канал - https://t.me/+DRDhQqcscmIxMDIx" },
-      { name: "элион", rank: "Средний Фейм", color:"green", img: "https://i.postimg.cc/CMkvkmR5/elion.jpg", desc: "@oaxuo или @userelion более известный как элион, раньше была лика психолог, в км с 2022 года, был проект в месте с ластом на 700-800 типов но его снесли, щас проект на 120 типов, овнер клана #honey клан на 100 типов так же в клане есть медийные личности" },
-      { name: "metancio grief", rank: "Высокий Фейм", color:"blue", img: "https://i.postimg.cc/mDWqYMW2/metancio.jpg", desc: "Пришел в начале 2023 года и набирал фейм на проектах и эдитах,делал эдиты медийкам одновременно делал контент на начинающих феймов в проекте\nDeception Crime:\nhttps://t.me/+WWudmjETY1MwNGZk" },
-      { name: "Mast", rank: "Медийка", color:"red", img: "https://i.postimg.cc/8Cnmt9R3/mast.jpg", desc: "Попал в комьюнити в середине 2022 года. Привел в комьюнити Симпатия, на данный момент не появлялся на просторах телеграмма больше года. Знаком с многими личностями, на данный момент развивает тгк.\nhttps://t.me/wewae" },
-      { name: "лайнари", rank: "Средний Фейм", color:"green", img: "https://i.postimg.cc/N0wcLC93/launary.jpg", desc: "@fucklaynari более известен как лайнари пришел в км в 2023 году до этого наблюдал за км где-то год набираясь знаний и умений по касте я осинтер и эдитор, был свой проект на 200 сабов но его делитнул так как не хватало времени вести сейчас имеет свой канал 180 сабов, овнерки в двух каналах 130 сабов и 200, знаком с личностями как: гришаня доксеров куте хелок купидон евгений воронов элион" },
-      { name: "f1kus", rank: "Средний Фейм", color:"green", img: "https://i.postimg.cc/XqkT7gqy/fikus.jpg", desc: "Пришел в км в 2024 году.\nОвнер проекта на 250 сабов- https://t.me/perexodf1base\nРаньше был соовнером проекта на 150 сабов, ссылку на него утерял так как тот акаунта снесли" },
-      { name: "Ветров", rank: "Медийка", color:"red", img: "https://i.postimg.cc/D0WZNbVc/Vetrov.jpg", desc: "Ветров, в км с 23, имел каналы общей сложностью на 4-5к сабов которые снесли, на данный момент 600 подписчиков ( 140 заявок ) , узнают очень часто , сносили прошлые адаптеры прайсы" }
-    ];
+<header>
+  <h1>FameList</h1>
+  <div class="search-container"><input type="text" id="search" placeholder="Поиск..."></div>
+  <div class="telegram-link"><a href="https://t.me/nqaef" target="_blank">наш телеграм канал</a></div>
+</header>
+<div class="buttons">
+  <button onclick="openInfo('list')">Попасть в лист</button>
+  <button onclick="openInfo('info')">Информация</button>
+</div>
+<main>
+  <div class="people-container" id="people"></div>
+</main>
+<div class="modal" id="modal">
+  <div class="modal-content" id="modal-content"></div>
+</div>
+<script>
+const people = [
+  { name: "Гришаня Доксеров", rank: "Создатель", color:"rainbow", img:"https://i.postimg.cc/RhT6mzKV/8b4a84335ec143aed6a829c6bc9fe0cd.jpg", desc:"Медийка. Пришел в км в 2021 году. Стал популярным благодаря бесплатному деффингу и тик ток видео." },
+  { name: "Куте", rank: "Админ", color:"vip", img:"https://i.postimg.cc/QtfZZ4VZ/photo-2025-09-06-16-10-13.jpg", desc:"Куте, добрый и феймовый человек. В км с 2022 года. Имеет свой тик ток аккаунт и телеграм каналы." },
+  { name: "Sofia Dox", rank:"Медийка", color:"red", img:"https://i.postimg.cc/CKH9gPdL/photo-2025-09-06-16-50-03.jpg", desc:"приобрёл популярность за счёт высокой аудитории, конфликты с медийками и феймами по касте - осинтер сватер провокатор соц инженерия\nзнаком с личностями: лордик, тедди, мирик, лезвие, блек принц имел тгк: 1.1к, 1.2к, 3к, 2к сейчас на данный момент почти 3.1к" },
+  { name:"лето шаблонiр", rank:"Начинающий Фейм", color:"brown", img:"https://i.postimg.cc/zGLKjg0W/leto-shablonir.jpg", desc:"Перешел в комьюните ЭДИТОРСТВА в 2025 году, начал поднимать по не многу фейм, но потом потерял и за случий сноса, так же был канал на 300 сабов, но произошел снос, и щас создал новый тгк, и новую лику (старая лика •вензи• )\nтг: @letzex\nтгк: в профиле"},
+  { name:"Новиков", rank:"Начинающий Фейм", color:"brown", img:"https://i.postimg.cc/764KBxSb/novikov.jpg", desc:"пришел в км в 25 году примерно 3 месяца назад, имеет хороший опыт, есть хороший тгк"},
+  { name:"Lewha", rank:"Средний Фейм", color:"green", img:"https://i.postimg.cc/8cWcHfTY/lewha.jpg", desc:"Пришел в км в 2023 году имеет средний фейм (так как потерял много аккаунтов), новый тгк-https://t.me/+8pXoDWzojBYxOWE9, Тг @Mqtvw"},
+  { name:"Кайсен", rank:"Начинающий Фейм", color:"brown", img:"https://i.postimg.cc/ZYPzd6Gx/kaysen.jpg", desc:"Имеет Начинающий фейм, Пришёл в Комьюнити 2025 году, Каста Осинт-Сват-Снос, Знаком с такими личностями как: Громко,Апатия,Сквизи,Мирик,Факоф,имеет канал с 120 Подписчиками"},
+  { name:"every", rank:"Высокий Фейм", color:"blue", img:"https://i.postimg.cc/k5Z29cnb/every.jpg", desc:"Пришел в км в 2024 году в декабре, начал активно развиваться после того как ливнул друг, на данный момент афк. Имеет два канала один общий с другом на 200 сабов второй на 1.1 к сабов его\nего канал - https://t.me/+DRDhQqcscmIxMDIx"},
+  { name:"элион", rank:"Средний Фейм", color:"green", img:"https://i.postimg.cc/CMkvkmR5/elion.jpg", desc:"@oaxuo или @userelion более известный как элион, раньше была лика психолог, в км с 2022 года, был проект на 120 типов, овнер клана #honey клан на 100 типов"},
+  { name:"metancio grief", rank:"Высокий Фейм", color:"blue", img:"https://i.postimg.cc/mDWqYMW2/metancio.jpg", desc:"Пришел в начале 2023 года и набирал фейм на проектах и эдитах,делал эдиты медийкам одновременно делал контент на начинающих феймов в проекте\nDeception Crime:\nhttps://t.me/+WWudmjETY1MwNGZk"},
+  { name:"Mast", rank:"Медийка", color:"red", img:"https://i.postimg.cc/8Cnmt9R3/mast.jpg", desc:"Попал в комьюнити в середине 2022 года. Привел в комьюнити Симпатия, на данный момент не появлялся на просторах телеграмма больше года. Знаком с многими личностями, на данный момент развивает тгк.\nhttps://t.me/wewae"},
+  { name:"лайнари", rank:"Средний Фейм", color:"green", img:"https://i.postimg.cc/N0wcLC93/launary.jpg", desc:"@fucklaynari более известен как лайнари пришел в км в 2023 году"},
+  { name:"f1kus", rank:"Средний Фейм", color:"green", img:"https://i.postimg.cc/XqkT7gqy/fikus.jpg", desc:"Пришел в км в 2024 году.\nОвнер проекта на 250 сабов- https://t.me/perexodf1base"},
+  { name:"Ветров", rank:"Медийка", color:"red", img:"https://i.postimg.cc/D0WZNbVc/Vetrov.jpg", desc:"Ветров, в км с 23, имел каналы общей сложностью на 4-5к сабов которые снесли, на данный момент 600 подписчиков ( 140 заявок ) , узнают очень часто , сносили прошлые адаптеры прайсы"}
+];
 
-    const rankOrder = ["Создатель", "Админ", "Медийка", "Высокий Фейм", "Средний Фейм", "Начинающий Фейм"];
+const peopleContainer = document.getElementById('people');
+const modal = document.getElementById('modal');
+const modalContent = document.getElementById('modal-content');
 
-    function renderPeople(filter = "") {
-      const container = document.getElementById("people");
-      container.innerHTML = "";
+function showPeople(list) {
+  peopleContainer.innerHTML = '';
+  list.forEach(person => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    const rankDiv = document.createElement('div');
+    rankDiv.className = 'rank';
+    if(person.color==='rainbow') rankDiv.classList.add('rainbow');
+    else if(person.color==='vip') rankDiv.classList.add('vip');
+    else rankDiv.classList.add(person.color);
+    rankDiv.textContent = person.rank;
+    card.appendChild(rankDiv);
+    const img = document.createElement('img');
+    img.src = person.img;
+    img.className = 'avatar';
+    card.appendChild(img);
+    const nick = document.createElement('div');
+    nick.className = 'nickname';
+    nick.textContent = person.name;
+    card.appendChild(nick);
+    card.addEventListener('click', ()=>openModal(person));
+    peopleContainer.appendChild(card);
+  });
+}
 
-      let filtered = people.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()));
-      filtered.sort((a, b) => rankOrder.indexOf(a.rank) - rankOrder.indexOf(b.rank));
+function openModal(person){
+  modalContent.innerHTML = `
+    <img src="${person.img}">
+    <div class="nickname">${person.name}</div>
+    <div class="rank">${person.rank}</div>
+    <div class="desc">${person.desc}</div>
+    <div class="close" onclick="closeModal()">×</div>
+  `;
+  modal.classList.add('active');
+}
 
-      filtered.forEach(person => {
-        container.innerHTML += `
-          <div class="card" onclick='openModal(${JSON.stringify(person)})'>
-            <div class="rank ${person.color}">${person.rank}</div>
-            <img src="${person.img}" alt="${person.name}" class="avatar">
-            <div class="nickname">${person.name}</div>
-          </div>
-        `;
-      });
-    }
+function closeModal(){ modal.classList.remove('active'); }
 
-    function openModal(person) {
-      const modal = document.getElementById("modal");
-      const content = document.getElementById("modal-content");
-      content.innerHTML = `
-        <span class="close" onclick="closeModal()">×</span>
-        <img src="${person.img}" alt="${person.name}">
-        <div class="nickname">${person.name}</div>
-        <div class="rank ${person.color}">${person.rank}</div>
-        <div class="desc">${person.desc}</div>
-      `;
-      modal.classList.add("active");
-    }
+document.getElementById('search').addEventListener('input', (e)=>{
+  const query = e.target.value.toLowerCase();
+  const filtered = people.filter(p=>p.name.toLowerCase().includes(query));
+  showPeople(filtered);
+});
 
-    function openInfo(type) {
-      const modal = document.getElementById("modal");
-      const content = document.getElementById("modal-content");
-      if (type === "list") {
-        content.innerHTML = `
-          <span class="close" onclick="closeModal()">×</span>
-          <div class="desc">Чтобы вас добавили в лист, необходимо оставить заявку в <a href="https://t.me/+gWFn75HpfYY3ODEx" target="_blank">нашем чате</a></div>
-        `;
-      } else {
-        content.innerHTML = `
-          <span class="close" onclick="closeModal()">×</span>
-          <div class="desc">Вся информация доступна в нашей группе <a href="https://t.me/+gWFn75HpfYY3ODEx" target="_blank">ссылка</a></div>
-        `;
-      }
-      modal.classList.add("active");
-    }
+function openInfo(type){
+  let text = '';
+  if(type==='list') text='Чтобы вас добавили в лист, необходимо оставить заявку в https://t.me/+gWFn75HpfYY3ODEx';
+  if(type==='info') text='Вся информация в нашей группе https://t.me/+gWFn75HpfYY3ODEx';
+  modalContent.innerHTML = `<div class="desc" style="text-align:center">${text.replace(/(https:\/\/\S+)/,'<a href="$1" target="_blank">$1</a>')}</div>
+  <div class="close" onclick="closeModal()">×</div>`;
+  modal.classList.add('active');
+}
 
-    function closeModal() {
-      document.getElementById("modal").classList.remove("active");
-    }
-
-    document.getElementById("search").addEventListener("input", (e) => {
-      renderPeople(e.target.value);
-    });
-
-    renderPeople();
-  </script>
+showPeople(people);
+</script>
 </body>
 </html>
