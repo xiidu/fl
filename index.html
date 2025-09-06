@@ -100,7 +100,7 @@ header h1 { margin: 0 auto; font-size: 1.5em; }
 .modal-content .rank { position: absolute; top: 20px; right: 20px; font-size: 1em; }
 .modal-content .desc { clear: both; margin-top: 15px; font-size: 0.95em; color: #ccc; white-space: pre-line; }
 .close {
-  position: absolute; top: -40px; right: -40px;
+  position: absolute; top: 10px; right: 10px;
   background: red; color: white;
   border-radius: 50%; width: 30px; height: 30px;
   text-align: center; line-height: 30px;
@@ -159,55 +159,55 @@ const peopleContainer = document.getElementById('people');
 const modal = document.getElementById('modal');
 const modalContent = document.getElementById('modal-content');
 
-function showPeople(list) {
-  peopleContainer.innerHTML = '';
-  list.forEach(person => {
+function showPeople(list){
+  peopleContainer.innerHTML='';
+  list.forEach(person=>{
     const card = document.createElement('div');
-    card.className = 'card';
+    card.className='card';
     const rankDiv = document.createElement('div');
-    rankDiv.className = 'rank';
+    rankDiv.className='rank';
     if(person.color==='rainbow') rankDiv.classList.add('rainbow');
     else if(person.color==='vip') rankDiv.classList.add('vip');
     else rankDiv.classList.add(person.color);
-    rankDiv.textContent = person.rank;
+    rankDiv.textContent=person.rank;
     card.appendChild(rankDiv);
-    const img = document.createElement('img');
-    img.src = person.img;
-    img.className = 'avatar';
+    const img=document.createElement('img');
+    img.src=person.img;
+    img.className='avatar';
     card.appendChild(img);
-    const nick = document.createElement('div');
-    nick.className = 'nickname';
-    nick.textContent = person.name;
+    const nick=document.createElement('div');
+    nick.className='nickname';
+    nick.textContent=person.name;
     card.appendChild(nick);
-    card.addEventListener('click', ()=>openModal(person));
+    card.addEventListener('click',()=>openModal(person));
     peopleContainer.appendChild(card);
   });
 }
 
 function openModal(person){
-  modalContent.innerHTML = `
+  modalContent.innerHTML=`
+    <div class="close" onclick="closeModal()">×</div>
     <img src="${person.img}">
     <div class="nickname">${person.name}</div>
-    <div class="rank">${person.rank}</div>
+    <div class="rank ${person.color}">${person.rank}</div>
     <div class="desc">${person.desc}</div>
-    <div class="close" onclick="closeModal()">×</div>
   `;
   modal.classList.add('active');
 }
 
 function closeModal(){ modal.classList.remove('active'); }
 
-document.getElementById('search').addEventListener('input', (e)=>{
-  const query = e.target.value.toLowerCase();
-  const filtered = people.filter(p=>p.name.toLowerCase().includes(query));
+document.getElementById('search').addEventListener('input',(e)=>{
+  const query=e.target.value.toLowerCase();
+  const filtered=people.filter(p=>p.name.toLowerCase().includes(query));
   showPeople(filtered);
 });
 
 function openInfo(type){
-  let text = '';
+  let text='';
   if(type==='list') text='Чтобы вас добавили в лист, необходимо оставить заявку в https://t.me/+gWFn75HpfYY3ODEx';
   if(type==='info') text='Вся информация в нашей группе https://t.me/+gWFn75HpfYY3ODEx';
-  modalContent.innerHTML = `<div class="desc" style="text-align:center">${text.replace(/(https:\/\/\S+)/,'<a href="$1" target="_blank">$1</a>')}</div>
+  modalContent.innerHTML=`<div class="desc" style="text-align:center">${text.replace(/(https:\/\/\S+)/,'<a href="$1" target="_blank">$1</a>')}</div>
   <div class="close" onclick="closeModal()">×</div>`;
   modal.classList.add('active');
 }
