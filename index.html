@@ -88,17 +88,10 @@
       padding: 15px;
       text-align: center;
       cursor: pointer;
-      transform: scale(0.9);
-      opacity: 0;
-      animation: fadeInCard 2s forwards;
+      transition: transform 0.3s ease;
     }
     .card:hover {
       transform: scale(1.05);
-      transition: transform 0.3s ease;
-    }
-    @keyframes fadeInCard {
-      from { opacity: 0; transform: translateY(40px) scale(0.9); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
     }
     .rank {
       font-size: 0.9em;
@@ -207,11 +200,13 @@
       background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: rainbow 3s linear infinite;
+      background-size: 400% 400%;
+      animation: rainbow 5s ease infinite;
     }
     @keyframes rainbow {
       0% { background-position: 0% 50%; }
-      100% { background-position: 100% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
     .rank.vip {
       color: gold;
@@ -274,16 +269,14 @@
       let filtered = people.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()));
       filtered.sort((a, b) => rankOrder.indexOf(a.rank) - rankOrder.indexOf(b.rank));
 
-      filtered.forEach((person, i) => {
-        setTimeout(() => {
-          container.innerHTML += `
-            <div class="card" onclick='openModal(${JSON.stringify(person)})'>
-              <div class="rank ${person.color}">${person.rank}</div>
-              <img src="${person.img}" alt="${person.name}" class="avatar">
-              <div class="nickname">${person.name}</div>
-            </div>
-          `;
-        }, i * 200);
+      filtered.forEach(person => {
+        container.innerHTML += `
+          <div class="card" onclick='openModal(${JSON.stringify(person)})'>
+            <div class="rank ${person.color}">${person.rank}</div>
+            <img src="${person.img}" alt="${person.name}" class="avatar">
+            <div class="nickname">${person.name}</div>
+          </div>
+        `;
       });
     }
 
