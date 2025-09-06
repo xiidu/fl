@@ -11,17 +11,7 @@ body {
   color: white;
   text-align: center;
   overflow-x: hidden;
-
-  /* Фон для ПК — градиент голубой */
   background: linear-gradient(135deg, #1c1c1c, #2a2a72);
-}
-
-/* Фон для мобильных устройств */
-@media (max-width: 768px) {
-  body {
-    background: url('https://i.pinimg.com/736x/1b/00/40/1b0040c64af41da706a51d610e7407b5.jpg') no-repeat center center;
-    background-size: cover;
-  }
 }
 
 header {
@@ -99,7 +89,6 @@ header h1 { margin: 0; font-size: 1.5em; }
 .avatar { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #ff4081; margin-bottom: 8px; }
 .nickname { font-size: 1em; font-weight: bold; margin-top: 5px; }
 
-/* Радужный и VIP эффекты */
 @keyframes rainbow { 0%{color:red;}14%{color:orange;}28%{color:yellow;}42%{color:green;}57%{color:cyan;}71%{color:blue;}85%{color:violet;}100%{color:red;} }
 .rank.rainbow { animation: rainbow 3s infinite linear; }
 
@@ -241,7 +230,6 @@ function renderPeople(filtered = people){
   });
 }
 
-// Кнопки без аватара и рамки
 function openCustomModal(text){
   modalAvatar.style.display = "none";
   modalNickname.style.display = "none";
