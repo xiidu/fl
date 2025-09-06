@@ -13,7 +13,6 @@ body {
   overflow-x: hidden;
   background: linear-gradient(135deg, #1c1c1c, #2a2a72);
 }
-
 header {
   padding: 15px 20px;
   background: rgba(0,0,0,0.6);
@@ -25,9 +24,7 @@ header {
   gap: 20px;
   flex-wrap: wrap;
 }
-
 header h1 { margin: 0; font-size: 1.5em; }
-
 #searchInput {
   width: 300px;
   padding: 6px 10px;
@@ -35,7 +32,6 @@ header h1 { margin: 0; font-size: 1.5em; }
   border: none;
   font-size: 1em;
 }
-
 #telegramLink {
   color: #ff4081;
   text-decoration: none;
@@ -43,7 +39,6 @@ header h1 { margin: 0; font-size: 1.5em; }
   transition: color 0.3s;
 }
 #telegramLink:hover { color: #ff79b0; }
-
 .buttons-container {
   margin: 20px 0;
   display: flex;
@@ -64,14 +59,12 @@ header h1 { margin: 0; font-size: 1.5em; }
   background: #ff79b0;
   transform: scale(1.05);
 }
-
 .people-container {
   overflow-x: auto;
   white-space: nowrap;
   padding: 20px;
   scroll-behavior: smooth;
 }
-
 .card {
   display: inline-block;
   width: 140px;
@@ -84,17 +77,13 @@ header h1 { margin: 0; font-size: 1.5em; }
   transition: transform 0.3s, opacity 0.3s;
 }
 .card:hover { transform: scale(1.05); }
-
 .rank { font-size: 0.9em; margin-bottom: 5px; }
 .avatar { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #ff4081; margin-bottom: 8px; }
 .nickname { font-size: 1em; font-weight: bold; margin-top: 5px; }
-
 @keyframes rainbow { 0%{color:red;}14%{color:orange;}28%{color:yellow;}42%{color:green;}57%{color:cyan;}71%{color:blue;}85%{color:violet;}100%{color:red;} }
 .rank.rainbow { animation: rainbow 3s infinite linear; }
-
 @keyframes goldShine { 0%,100%{text-shadow:0 0 5px #FFD700,0 0 10px #FFD700,0 0 20px #FFD700;color:#FFD700;} 50%{text-shadow:0 0 10px #fff,0 0 20px #FFD700,0 0 30px #FFD700;color:#FFD700;} }
 .rank.vip { color:#FFD700; text-shadow:0 0 5px #FFD700,0 0 10px #FFD700,0 0 20px #FFD700; animation: goldShine 2s infinite ease-in-out; font-weight:bold; }
-
 .modal {
   display: none;
   position: fixed;
@@ -113,7 +102,6 @@ header h1 { margin: 0; font-size: 1.5em; }
   transition: transform 0.5s ease, opacity 0.5s ease;
 }
 .modal.show { display: block; transform: translate(-50%,-50%) scale(1); opacity:1; }
-
 .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
 .modal-header-left { display:flex; align-items:center; gap:15px; }
 .modal-avatar { width: 80px; height:80px; border-radius:50%; object-fit:cover; border:3px solid #ff4081; }
@@ -121,9 +109,7 @@ header h1 { margin: 0; font-size: 1.5em; }
 .modal-rank { font-size:1.2em; }
 .modal-close { width:25px;height:25px;background:red;color:white;font-weight:bold;border-radius:50%;display:flex;justify-content:center;align-items:center;cursor:pointer;font-size:18px; }
 .modal-close:hover { transform:scale(1.2); }
-
 .modal-description { font-size:1em; color:#ccc; overflow-y:auto; max-height:400px; }
-
 .overlay {
   display: none;
   position: fixed;
@@ -134,7 +120,6 @@ header h1 { margin: 0; font-size: 1.5em; }
   transition: opacity 0.4s ease;
 }
 .overlay.show { display:block; opacity:1; }
-
 </style>
 </head>
 <body>
@@ -173,8 +158,8 @@ header h1 { margin: 0; font-size: 1.5em; }
 const people = [
   { name: "Гришаня Доксеров", rank: "Создатель", color:"rainbow", img: "https://i.postimg.cc/RhT6mzKV/8b4a84335ec143aed6a829c6bc9fe0cd.jpg", desc: "Медийка. Пришел в км в 2021 году. Стал популярным благодаря бесплатному деффингу и тик ток видео." },
   { name: "Куте", rank: "Админ", color:"vip", img: "https://i.postimg.cc/QtfZZ4VZ/photo-2025-09-06-16-10-13.jpg", desc: "Куте, добрый и феймовый человек. В км с 2022 года. Имеет свой тик ток аккаунт и телеграм каналы." },
-  { name: "Sofia Dox", rank: "Медийка", color:"red", img: "https://i.postimg.cc/CKH9gPdL/photo-2025-09-06-16-50-03.jpg", desc: "приобрёл популярность за счёт высокой аудитории конфликты с медийками и феймами по касте - осинтер сватер провокатор соц инженерия 
-знаком с личностями: лордик, тедди, мирик, лезвие, блек принц имел тгк: 1.1к, 1.2к, 3к, 2к сейчас на данный момент почти 3.1к" },
+  { name: "Sofia Dox", rank: "Медийка", color:"red", img: "https://i.postimg.cc/CKH9gPdL/photo-2025-09-06-16-50-03.jpg", desc: `приобрёл популярность за счёт высокой аудитории, конфликты с медийками и феймами по касте - осинтер сватер провокатор соц инженерия
+знаком с личностями: лордик, тедди, мирик, лезвие, блек принц имел тгк: 1.1к, 1.2к, 3к, 2к сейчас на данный момент почти 3.1к` }
 ];
 
 const container = document.getElementById("people");
@@ -200,25 +185,18 @@ function renderPeople(filtered = people){
   filtered.forEach(person=>{
     const card = document.createElement("div");
     card.classList.add("card");
-
     const rankDiv = document.createElement("div");
     rankDiv.className = "rank";
     if(person.color === "rainbow") rankDiv.classList.add("rainbow");
     else if(person.color === "vip") rankDiv.classList.add("vip");
     else rankDiv.style.color = person.color || "#ff79b0";
     rankDiv.textContent = person.rank;
-
-    card.innerHTML = `
-      <img src="${person.img}" alt="${person.name}" class="avatar">
-      <div class="nickname">${person.name}</div>
-    `;
+    card.innerHTML = `<img src="${person.img}" alt="${person.name}" class="avatar"><div class="nickname">${person.name}</div>`;
     card.prepend(rankDiv);
-
     card.addEventListener("click",()=>{
       modalAvatar.style.display = "block";
       modalNickname.style.display = "block";
       modalRank.style.display = "block";
-
       modalAvatar.src = person.img;
       modalNickname.textContent = person.name;
       modalRank.textContent = person.rank;
@@ -227,7 +205,6 @@ function renderPeople(filtered = people){
       overlay.classList.add("show");
       setTimeout(()=> modal.classList.add("show"), 10);
     });
-
     container.appendChild(card);
   });
 }
@@ -275,5 +252,3 @@ renderPeople();
 </script>
 </body>
 </html>
-
-
