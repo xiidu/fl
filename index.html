@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FameList</title>
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: white;
+  text-align: center;
+  overflow-x: hidden;
+
+  /* Фон для ПК — градиент голубой */
+  background: linear-gradient(135deg, #1c1c1c, #2a2a72);
+}
+
+/* Фон для мобильных устройств */
+@media (max-width: 768px) {
+  body {
+    background: url('https://i.pinimg.com/736x/1b/00/40/1b0040c64af41da706a51d610e7407b5.jpg') no-repeat center center;
+    background-size: cover;
+  }
+}
+
+header {
+  padding: 15px 20px;
+  background: rgba(0,0,0,0.6);
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+header h1 { margin: 0; font-size: 1.5em; }
+
+#searchInput {
+  width: 300px;
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: none;
+  font-size: 1em;
+}
+
+#telegramLink {
+  color: #ff4081;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+#telegramLink:hover { color: #ff79b0; }
+
+.buttons-container {
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+.top-button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  background: #ff4081;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.top-button:hover {
+  background: #ff79b0;
+  transform: scale(1.05);
+}
+
+.people-container {
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 20px;
+  scroll-behavior: smooth;
+}
+
+.card {
+  display: inline-block;
+  width: 140px;
+  margin: 0 10px;
+  text-align: center;
+  cursor: pointer;
+  background: #333;
+  border-radius: 10px;
+  padding: 10px;
+  transition: transform 0.3s, opacity 0.3s;
+}
+.card:hover { transform: scale(1.05); }
+
+.rank { font-size: 0.9em; margin-bottom: 5px; }
+.avatar { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #ff4081; margin-bottom: 8px; }
+.nickname { font-size: 1em; font-weight: bold; margin-top: 5px; }
+
+/* Радужный и VIP эффекты */
+@keyframes rainbow { 0%{color:red;}14%{color:orange;}28%{color:yellow;}42%{color:green;}57%{color:cyan;}71%{color:blue;}85%{color:violet;}100%{color:red;} }
+.rank.rainbow { animation: rainbow 3s infinite linear; }
+
+@keyframes goldShine { 0%,100%{text-shadow:0 0 5px #FFD700,0 0 10px #FFD700,0 0 20px #FFD700;color:#FFD700;} 50%{text-shadow:0 0 10px #fff,0 0 20px #FFD700,0 0 30px #FFD700;color:#FFD700;} }
+.rank.vip { color:#FFD700; text-shadow:0 0 5px #FFD700,0 0 10px #FFD700,0 0 20px #FFD700; animation: goldShine 2s infinite ease-in-out; font-weight:bold; }
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%) scale(0.8);
+  width: 600px;
+  max-width: 90%;
+  height: 500px;
+  background: #222;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.8);
+  z-index: 1000;
+  opacity: 0;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+.modal.show { display: block; transform: translate(-50%,-50%) scale(1); opacity:1; }
+
+.modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+.modal-header-left { display:flex; align-items:center; gap:15px; }
+.modal-avatar { width: 80px; height:80px; border-radius:50%; object-fit:cover; border:3px solid #ff4081; }
+.modal-nickname { font-size:1.5em; font-weight:bold; }
+.modal-rank { font-size:1.2em; }
+.modal-close { width:25px;height:25px;background:red;color:white;font-weight:bold;border-radius:50%;display:flex;justify-content:center;align-items:center;cursor:pointer;font-size:18px; }
+.modal-close:hover { transform:scale(1.2); }
+
+.modal-description { font-size:1em; color:#ccc; overflow-y:auto; max-height:400px; }
+
+.overlay {
+  display: none;
+  position: fixed;
+  top:0; left:0; width:100%; height:100%;
+  background: rgba(0,0,0,0.7);
+  z-index:900;
+  opacity:0;
+  transition: opacity 0.4s ease;
+}
+.overlay.show { display:block; opacity:1; }
+
+</style>
+</head>
+<body>
+
+<header>
+  <h1>FameList</h1>
+  <input type="text" id="searchInput" placeholder="Поиск по никнейму">
+  <a href="https://t.me/nqaef" target="_blank" id="telegramLink">наш телеграм канал</a>
+</header>
+
+<div class="buttons-container">
+  <button class="top-button" id="joinList">Попасть в лист</button>
+  <button class="top-button" id="info">Информация</button>
+</div>
+
+<main>
+  <div class="people-container" id="people"></div>
+</main>
+
+<div class="overlay" id="overlay"></div>
+<div class="modal" id="modal">
+  <div class="modal-header">
+    <div class="modal-header-left">
+      <img src="" alt="Avatar" class="modal-avatar" id="modal-avatar">
+      <div>
+        <div class="modal-nickname" id="modal-nickname"></div>
+        <div class="modal-rank" id="modal-rank"></div>
+      </div>
+    </div>
+    <div class="modal-close" id="modal-close">×</div>
+  </div>
+  <div class="modal-description" id="modal-description"></div>
+</div>
+
+<script>
+const people = [
+  { name: "Гришаня Доксеров", rank: "Создатель", color:"rainbow", img: "https://i.postimg.cc/RhT6mzKV/8b4a84335ec143aed6a829c6bc9fe0cd.jpg", desc: "Медийка. Пришел в км в 2021 году. Стал популярным благодаря бесплатному деффингу и тик ток видео." },
+  { name: "Куте", rank: "Админ", color:"vip", img: "https://i.postimg.cc/QtfZZ4VZ/photo-2025-09-06-16-10-13.jpg", desc: "Куте, добрый и феймовый человек. Имеет свой тик ток аккаунт и телеграм каналы." }
+];
+
+const container = document.getElementById("people");
+const modal = document.getElementById("modal");
+const overlay = document.getElementById("overlay");
+const modalAvatar = document.getElementById("modal-avatar");
+const modalNickname = document.getElementById("modal-nickname");
+const modalRank = document.getElementById("modal-rank");
+const modalDescription = document.getElementById("modal-description");
+const modalClose = document.getElementById("modal-close");
+const searchInput = document.getElementById("searchInput");
+const joinListBtn = document.getElementById("joinList");
+const infoBtn = document.getElementById("info");
+
+function normalizeString(str){
+  const map = {'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e','ж':'zh','з':'z','и':'i','й':'i','к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'h','ц':'c','ч':'ch','ш':'sh','щ':'shch','ы':'y','э':'e','ю':'yu','я':'ya',
+  'А':'A','Б':'B','В':'V','Г':'G','Д':'D','Е':'E','Ё':'E','Ж':'ZH','З':'Z','И':'I','Й':'I','К':'K','Л':'L','М':'M','Н':'N','О':'O','П':'P','Р':'R','С':'S','Т':'T','У':'U','Ф':'F','Х':'H','Ц':'C','Ч':'CH','Ш':'SH','Щ':'SHCH','Ы':'Y','Э':'E','Ю':'YU','Я':'YA'};
+  return str.split('').map(c => map[c] || c).join('').toLowerCase();
+}
+
+function renderPeople(filtered = people){
+  container.innerHTML = "";
+  filtered.forEach(person=>{
+    const card = document.createElement("div");
+    card.classList.add("card");
+
+    const rankDiv = document.createElement("div");
+    rankDiv.className = "rank";
+    if(person.color === "rainbow") rankDiv.classList.add("rainbow");
+    else if(person.color === "vip") rankDiv.classList.add("vip");
+    else rankDiv.style.color = person.color || "#ff79b0";
+    rankDiv.textContent = person.rank;
+
+    card.innerHTML = `
+      <img src="${person.img}" alt="${person.name}" class="avatar">
+      <div class="nickname">${person.name}</div>
+    `;
+    card.prepend(rankDiv);
+
+    card.addEventListener("click",()=>{
+      modalAvatar.style.display = "block";
+      modalNickname.style.display = "block";
+      modalRank.style.display = "block";
+
+      modalAvatar.src = person.img;
+      modalNickname.textContent = person.name;
+      modalRank.textContent = person.rank;
+      modalRank.style.color = person.color && !["vip","rainbow"].includes(person.color) ? person.color : "#ff79b0";
+      modalDescription.textContent = person.desc;
+      overlay.classList.add("show");
+      setTimeout(()=> modal.classList.add("show"), 10);
+    });
+
+    container.appendChild(card);
+  });
+}
+
+// Кнопки без аватара и рамки
+function openCustomModal(text){
+  modalAvatar.style.display = "none";
+  modalNickname.style.display = "none";
+  modalRank.style.display = "none";
+  modalDescription.innerHTML = text;
+  overlay.classList.add("show");
+  setTimeout(()=> modal.classList.add("show"), 10);
+}
+
+joinListBtn.addEventListener("click",()=>{
+  openCustomModal(`Чтобы вас добавили в лист, необходимо оставить заявку в <a href="https://t.me/+gWFn75HpfYY3ODEx" target="_blank">https://t.me/+gWFn75HpfYY3ODEx</a>`);
+});
+
+infoBtn.addEventListener("click",()=>{
+  openCustomModal(`Вся информация в нашей группе <a href="https://t.me/+gWFn75HpfYY3ODEx" target="_blank">https://t.me/+gWFn75HpfYY3ODEx</a>`);
+});
+
+modalClose.addEventListener("click",()=>{
+  modal.classList.remove("show");
+  overlay.classList.remove("show");
+  modalAvatar.style.display = "block";
+  modalNickname.style.display = "block";
+  modalRank.style.display = "block";
+});
+
+overlay.addEventListener("click",()=>{
+  modal.classList.remove("show");
+  overlay.classList.remove("show");
+  modalAvatar.style.display = "block";
+  modalNickname.style.display = "block";
+  modalRank.style.display = "block";
+});
+
+searchInput.addEventListener("input",()=>{
+  const query = normalizeString(searchInput.value);
+  const filtered = people.filter(p=>normalizeString(p.name).includes(query));
+  renderPeople(filtered);
+});
+
+renderPeople();
+</script>
+</body>
+</html>
