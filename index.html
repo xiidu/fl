@@ -100,7 +100,7 @@ header h1 { margin: 0 auto; font-size: 1.5em; }
 .modal-content .rank { position: absolute; top: 20px; right: 20px; font-size: 1em; }
 .modal-content .desc { clear: both; margin-top: 15px; font-size: 0.95em; color: #ccc; white-space: pre-line; }
 .close {
-  position: absolute; top: 10px; right: 10px;
+  position: absolute; bottom: 10px; right: 10px;
   background: red; color: white;
   border-radius: 50%; width: 30px; height: 30px;
   text-align: center; line-height: 30px;
@@ -152,7 +152,7 @@ const people = [
   { name:"Mast", rank:"Медийка", color:"red", img:"https://i.postimg.cc/8Cnmt9R3/mast.jpg", desc:"Попал в комьюнити в середине 2022 года. Привел в комьюнити Симпатия, на данный момент не появлялся на просторах телеграмма больше года. Знаком с многими личностями, на данный момент развивает тгк.\nhttps://t.me/wewae"},
   { name:"лайнари", rank:"Средний Фейм", color:"green", img:"https://i.postimg.cc/N0wcLC93/launary.jpg", desc:"@fucklaynari более известен как лайнари пришел в км в 2023 году"},
   { name:"f1kus", rank:"Средний Фейм", color:"green", img:"https://i.postimg.cc/XqkT7gqy/fikus.jpg", desc:"Пришел в км в 2024 году.\nОвнер проекта на 250 сабов- https://t.me/perexodf1base"},
-  { name:"Ветров", rank:"Медийка", color:"red", img:"https://i.postimg.cc/D0WZNbVc/Vetrov.jpg", desc:"Ветров, в км с 23, имел каналы общей сложностью на 4-5к сабов которые снесли, на данный момент 600 подписчиков ( 140 заявок ) , узнают очень часто , сносили прошлые адаптеры прайсы"}
+  { name:"Ветров", rank:"Медийка", color:"red", img:"https://i.postimg.cc/D0WZNbVc/Vetrov.jpg", desc:"Ветров, в км с 23, имел каналы общей сложностью на 4-5к сабов которые снесли, на данный момент 600 подписчиков (140 заявок), узнают очень часто , сносили прошлые адаптеры прайсы"}
 ];
 
 const peopleContainer = document.getElementById('people');
@@ -162,9 +162,9 @@ const modalContent = document.getElementById('modal-content');
 function showPeople(list){
   peopleContainer.innerHTML='';
   list.forEach(person=>{
-    const card = document.createElement('div');
+    const card=document.createElement('div');
     card.className='card';
-    const rankDiv = document.createElement('div');
+    const rankDiv=document.createElement('div');
     rankDiv.className='rank';
     if(person.color==='rainbow') rankDiv.classList.add('rainbow');
     else if(person.color==='vip') rankDiv.classList.add('vip');
@@ -186,11 +186,11 @@ function showPeople(list){
 
 function openModal(person){
   modalContent.innerHTML=`
-    <div class="close" onclick="closeModal()">×</div>
     <img src="${person.img}">
     <div class="nickname">${person.name}</div>
     <div class="rank ${person.color}">${person.rank}</div>
     <div class="desc">${person.desc}</div>
+    <div class="close" onclick="closeModal()">×</div>
   `;
   modal.classList.add('active');
 }
