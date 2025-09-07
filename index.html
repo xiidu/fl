@@ -159,9 +159,10 @@ const people = [
   { name:"Ацепинов", rank:"Начинающий Фейм", color:"brown", img:"https://i.postimg.cc/hv0MnrQR/acepinov.jpg", desc:"Пришел в км в 21 году,начал строить личность только в 22 году после был в АФК а после уже вернулся в 24 и стал активить, постоянно менял лики на данный момент находится на нейме Ацепинов  фейм."}
 ];
 
+const rankOrder = ["Создатель","Админ","Медийка","Высокий Фейм","Средний Фейм","Начинающий Фейм"];
+
 function normalize(str){
-  const map={'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e','ж':'zh','з':'z','и':'i','й':'i','к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'h','ц':'c','ч':'ch','ш':'sh','щ':'shch','ы':'y','э':'e','ю':'yu','я':'ya',
-    'А':'A','Б':'B','В':'V','Г':'G','Д':'D','Е':'E','Ё':'E','Ж':'ZH','З':'Z','И':'I','Й':'I','К':'K','Л':'L','М':'M','Н':'N','О':'O','П':'P','Р':'R','С':'S','Т':'T','У':'U','Ф':'F','Х':'H','Ц':'C','Ч':'CH','Ш':'SH','Щ':'SHCH','Ы':'Y','Э':'E','Ю':'YU','Я':'YA'};
+  const map={'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e','ж':'zh','з':'z','и':'i','й':'i','к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'h','ц':'c','ч':'ch','ш':'sh','щ':'shch','ы':'y','э':'e','ю':'yu','я':'ya'};
   return str.split('').map(c=>map[c]||c).join('').toLowerCase();
 }
 
@@ -172,6 +173,7 @@ const searchInput=document.getElementById('search');
 
 function showPeople(list){
   peopleContainer.innerHTML='';
+  list.sort((a,b)=>rankOrder.indexOf(a.rank)-rankOrder.indexOf(b.rank));
   list.forEach(person=>{
     const card=document.createElement('div');
     card.className='card';
@@ -205,7 +207,6 @@ function openModal(person){
   `;
   modal.classList.add('active');
 }
-
 function closeModal(){ modal.classList.remove('active'); }
 
 searchInput.addEventListener('input',()=>{
@@ -226,5 +227,3 @@ showPeople(people);
 </script>
 </body>
 </html>
-
-
